@@ -178,6 +178,23 @@
     [NSTask launchedTaskWithLaunchPath:@"/usr/bin/xcode-select" arguments:@[@"--install"]];
 }
 
+- (IBAction)installXcodeCommandLineToolsButtonClicked:(id)sender {
+    [self installXcodeCommandLineTools];
+}
+
+- (void) installXcodeCommandLineTools {
+    NSAlert * alert = [[NSAlert alloc] init];
+    [alert setMessageText:@"Xcode command line tools are required for signing the modified rcd file.  Without signing OS X will keep complaining that the signature is invalid.\n\nKicking off Xcode command line tools install, please follow the instructions and click the Refresh button in this app once the install has finished."];
+    [alert addButtonWithTitle:@"OK, kick it off..."];
+    [alert addButtonWithTitle:@"No, don't install"];
+    if ([alert runModal] == NSAlertSecondButtonReturn) {
+        return;
+    }
+    
+    // Kickoff the install.
+    [NSTask launchedTaskWithLaunchPath:@"/usr/bin/xcode-select" arguments:@[@"--install"]];
+}
+
 - (IBAction)showInFinderMenu:(id)sender {
     NSInteger selectedRow = [_tableView selectedRow];
     if (selectedRow == -1) {
