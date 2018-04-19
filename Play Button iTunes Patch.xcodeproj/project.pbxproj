@@ -306,7 +306,6 @@
 			files = (
 				77F7F1731E75CA6E006DED8A /* ErrorWindowController.xib in Resources */,
 				778FE4CD1A144EAC00A3CE34 /* Images.xcassets in Resources */,
-				7769FE471A47A357008971EB /* notes.txt in Resources */,
 				77D3D3771A17BD0F00E427B4 /* logo.png in Resources */,
 				777958111A159ADC00F04458 /* Credits.html in Resources */,
 				778FE4D01A144EAC00A3CE34 /* MainMenu.xib in Resources */,
