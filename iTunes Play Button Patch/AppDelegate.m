@@ -192,6 +192,10 @@
 }
 
 - (IBAction)reportAnIssueClicked:(id)sender {
+    [self reportAnIssue];
+}
+
+- (void) reportAnIssue {
     NSAlert * alert = [[NSAlert alloc] init];
     [alert setMessageText:@"You can report issues on the github project page (ideal, but requires a github account), or directly through email.  Which would you prefer?"];
     [alert addButtonWithTitle:@"Github"];
@@ -202,7 +206,7 @@
     NSString * url = nil;
     NSModalResponse response = [alert runModal];
     if (response == NSAlertFirstButtonReturn) {   // github
-        message = @"Opening the log file directory and the github new issue page.  Please submit a new issue describing your situation and paste the text from the log file.";
+        message = @"Now opening the log file directory and the github new issue page.  Please submit a new issue describing your situation and paste the text from the log file.";
         url = @"https://github.com/thebitguru/play-button-itunes-patch/issues/new";
     } else if (response == NSAlertSecondButtonReturn) {  // email.
         message = @"Opening the log file directory and triggering email.  Please attach the log files to your email.\n\nIn case if this does not launch your email application, please manually send an email to farhan@thebitguru.com.";
