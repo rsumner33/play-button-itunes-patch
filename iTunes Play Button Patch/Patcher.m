@@ -14,6 +14,7 @@
     NSData * _FIND_COMMAND_DATA;
     NSData * _REPLACE_COMMAND_DATA;
     NSFileManager * _fileManager;
+    SIPStatus _SystemIntegrityProtectionStatus;
 }
 
 - (id) init {

@@ -17,6 +17,7 @@
                 <outlet property="osVersion" destination="BUX-Vj-wPS" id="tqx-eQ-4Zr"/>
                 <outlet property="restoreFromBackupButton" destination="gle-HH-I5U" id="Emz-e2-UPl"/>
                 <outlet property="status" destination="q1B-cJ-LCq" id="W1U-Ge-lfy"/>
+                <outlet property="systemIntegrityProtectionStatus" destination="T7Y-Re-O3H" id="wWN-nZ-s9Y"/>
                 <outlet property="tableView" destination="HWV-yP-WsQ" id="IwN-Q6-mvI"/>
                 <outlet property="topBackground" destination="Ehh-68-iZr" id="lRQ-ly-Ezg"/>
                 <outlet property="window" destination="QvC-M9-y7g" id="gIp-Ho-8D9"/>
@@ -124,6 +125,7 @@
                     </menu>
                 </menuItem>
             </items>
+            <point key="canvasLocation" x="47" y="107"/>
         </menu>
         <window identifier="mainWindow" title="Play Button iTunes Patch" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" frameAutosaveName="MainWindow" animationBehavior="default" id="QvC-M9-y7g">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
@@ -160,7 +162,7 @@
                         </textFieldCell>
                     </textField>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="6VR-hj-ale">
-                        <rect key="frame" x="660" y="7" width="76" height="32"/>
+                        <rect key="frame" x="660" y="7" width="75" height="32"/>
                         <buttonCell key="cell" type="push" title="Patch" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="f02-cN-DLs">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -187,7 +189,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="620" height="19"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <size key="intercellSpacing" width="3" height="2"/>
-                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                     <tableColumns>
                                         <tableColumn identifier="filename" editable="NO" width="116" minWidth="40" maxWidth="1000" id="uJg-zm-EyF">
@@ -235,7 +237,6 @@
                                     </connections>
                                 </tableView>
                             </subviews>
-                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </clipView>
                         <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="SgS-Ce-NUq">
                             <rect key="frame" x="1" y="119" width="223" height="15"/>
@@ -246,7 +247,7 @@
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <tableHeaderView key="headerView" id="0yg-q7-aUS">
-                            <rect key="frame" x="0.0" y="0.0" width="238" height="17"/>
+                            <rect key="frame" x="0.0" y="0.0" width="707" height="23"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </tableHeaderView>
                         <connections>
@@ -254,7 +255,7 @@
                         </connections>
                     </scrollView>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="gle-HH-I5U">
-                        <rect key="frame" x="489" y="7" width="171" height="32"/>
+                        <rect key="frame" x="493" y="7" width="167" height="32"/>
                         <buttonCell key="cell" type="push" title="Restore from Backup" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="MW9-WL-0Sr">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -286,7 +287,7 @@
 
 Also, this program will backup the original file in case if you would like to restore the original functionality.
                                                                                
-This program comes with ABSOLUTELY NO WARRANTY; please see the license in the about window.</mutableString>
+This program comes with ABSOLUTELY NO WARRANTY; please see the license in the about window.</string>
                                     <color key="textColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
@@ -302,7 +303,7 @@ This program comes with ABSOLUTELY NO WARRANTY; please see the license in the ab
                         </constraints>
                     </customView>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="WMj-Zw-q3s">
-                        <rect key="frame" x="401" y="7" width="88" height="32"/>
+                        <rect key="frame" x="406" y="7" width="87" height="32"/>
                         <buttonCell key="cell" type="push" title="Refresh" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="pvz-8b-ccj">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -323,6 +324,7 @@ This program comes with ABSOLUTELY NO WARRANTY; please see the license in the ab
                     <constraint firstAttribute="bottom" secondItem="gle-HH-I5U" secondAttribute="bottom" constant="14" id="LMy-jL-PAH"/>
                     <constraint firstItem="IUL-yD-Jvs" firstAttribute="leading" secondItem="TEx-Mi-Kxc" secondAttribute="leading" id="M22-su-KKD"/>
                     <constraint firstItem="IUL-yD-Jvs" firstAttribute="leading" secondItem="QDU-yM-uKO" secondAttribute="leading" id="RhM-HG-O20"/>
+                    <constraint firstAttribute="trailing" secondItem="T7Y-Re-O3H" secondAttribute="trailing" constant="137" id="TX8-ya-Ahj"/>
                     <constraint firstAttribute="trailing" secondItem="gle-HH-I5U" secondAttribute="trailing" constant="96" id="TXN-jq-n9w"/>
                     <constraint firstItem="gle-HH-I5U" firstAttribute="leading" secondItem="WMj-Zw-q3s" secondAttribute="trailing" constant="12" id="fac-qk-2Ys"/>
                     <constraint firstItem="6VR-hj-ale" firstAttribute="top" secondItem="IUL-yD-Jvs" secondAttribute="bottom" constant="13" id="gtf-0F-MVs"/>
