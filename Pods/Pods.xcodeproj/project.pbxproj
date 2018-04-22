@@ -379,8 +379,8 @@
 				OTHER_LIBTOOLFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
-			};
-			name = Debug;
+>>>>>>>-HEAD
+ = Debug;
 		};
 		958AC97F32F9538D5C9C6C0C /* Release */ = {
 			isa = XCBuildConfiguration;
