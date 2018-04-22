@@ -49,6 +49,60 @@ dict>
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.utilities</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2014 Farhan Ahmad. All rights reserved.</string>
+======
+		<key>LSMinimumSystemVersion</key>
+	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2014 thebitguru. All rights reserved.</string>
+>>>>>>>-cc4f1bd
+key>NSMainNibFile</key>
+	<string>MainMenu</string>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+<<>>>>>>>+HEAD
+=====
+	<	<key>SUFeedURL</key>
+	<string>https://www.github.com</string>
+>>>>>>>-cc4f1bd
+dict>
+</plist>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.utilities</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2014 Farhan Ahmad. All rights reserved.</string>
+======
+		<key>LSMinimumSystemVersion</key>
+	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2014 thebitguru. All rights reserved.</string>
+>>>>>>>-cc4f1bd
+key>NSMainNibFile</key>
+	<string>MainMenu</string>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+<<>>>>>>>+HEAD
+=====
+	<	<key>SUFeedURL</key>
+	<string>https://www.github.com</string>
+>>>>>>>-cc4f1bd
+dict>
+</plist>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
 <<<<<<<+HEAD
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.utilities</string>

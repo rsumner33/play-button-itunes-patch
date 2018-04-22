@@ -96,6 +96,15 @@
     [_osVersion setStringValue:osVersion];
     DDLogInfo(@"OS Version: %@", osVersion);
     
+    _dateFormatter = [[NSDateFormatter alloc] init];
+    //    [_dateFormatter setDateFormat:@"MM/dd/Y h:mm:ss a"];
+    [_dateFormatter setDateStyle:NSDateFormatterShortStyle];
+    [_dateFormatter setTimeStyle:NSDateFormatterMediumStyle];
+    
+    NSString * osVersion = [[NSProcessInfo processInfo] operatingSystemVersionString];
+    [_osVersion setStringValue:osVersion];
+    DDLogInfo(@"OS Version: %@", osVersion);
+    
     [_topBackground setEndingColor:[NSColor colorWithCalibratedRed:38.0/255 green:90.0/255 blue:158.0/255 alpha:1.0]];
     [_topBackground setStartingColor:[NSColor colorWithCalibratedRed:48.0/255 green:118.0/255 blue:209.0/255 alpha:1.0]];
     [_topBackground setAngle:270];
@@ -249,15 +258,52 @@
     [self installXcodeCommandLineTools];
 }
 
+- (IBAction)reportAnIssueClicked:(id)sender {
+    NSAlert * alert = [[NSAlert alloc] init];
+    [alert setMessageText:@"You can report issues on the github project page (ideal, but requires a github account), or directly through email.  Which would you prefer?"];
+    [alert addButtonWithTitle:@"Github"];
+    [alert addButtonWithTitle:@"Email"];
+    [alert addButtonWithTitle:@"Cancel"];
+    
+    NSString * message = nil;
+    NSString * url = nil;
+    NSModalResponse response = [alert runModal];
+    if (response == NSAlertFirstButtonReturn) {   // github
+        message = @"Opening the log file directory and the github new issue page.  Please submit a new issue describing your situation and paste the text from the log file.";
+        url = @"https://github.com/thebitguru/play-button-itunes-patch/issues/new";
+    } else if (response == NSAlertSecondButtonReturn) {  // email.
+        message = @"Opening the log file directory and triggering email.  Please attach the log files to your email.\n\nIn case if this does not launch your email application, please manually send an email to farhan@thebitguru.com.";
+        url = @"mailto:farhan@thebitguru.com?subject=New%20Play%20Button%20iTunes%20Patch%20issue&body=Please%20remember%20to%20include%20the%20log%20files...";
+    } else {
+        return;
+    }
+
+    alert = [[NSAlert alloc] init];
+    [alert setMessageText:message];
+    [alert addButtonWithTitle:@"OK"];
+    [alert addButtonWithTitle:@"Cancel"];
+    if ([alert runModal] == NSAlertSecondButtonReturn) {
+        return;
+    }
+    
+    NSURL * logDirectory = [NSURL fileURLWithPath:[[_fileLogger logFileManager] logsDirectory]];
+    [[NSWorkspace sharedWorkspace] openURL:logDirectory];
+    
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:url]];
+}
+
 - (void) installXcodeCommandLineTools {
+    DDLogInfo(@"Asking for command line tools install...");
     NSAlert * alert = [[NSAlert alloc] init];
     [alert setMessageText:@"Xcode command line tools are required for signing the modified rcd file.  Without signing OS X will keep complaining that the signature is invalid.\n\nKicking off Xcode command line tools install, please follow the instructions and click the Refresh button in this app once the install has finished."];
     [alert addButtonWithTitle:@"OK, kick it off..."];
     [alert addButtonWithTitle:@"No, don't install"];
     if ([alert runModal] == NSAlertSecondButtonReturn) {
+        DDLogInfo(@"User decided not to install.");
         return;
     }
     
+    DDLogInfo(@"Kicking off the command line tools install: /usr/bin/xcode-select --install");
     // Kickoff the install.
     [NSTask launchedTaskWithLaunchPath:@"/usr/bin/xcode-select" arguments:@[@"--install"]];
 }
