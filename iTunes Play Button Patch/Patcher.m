@@ -9,28 +9,18 @@
 #import "Patcher.h"
 #import "RcdFile.h"
 #import <CommonCrypto/CommonDigest.h>   // Needed for MD5 sum.
-#import <CocoaLumberjack/CocoaLumberjack.h>
 
 @implementation Patcher {
     NSData * _FIND_COMMAND_DATA;
     NSData * _REPLACE_COMMAND_DATA;
     NSFileManager * _fileManager;
-    SIPStatus _SystemIntegrityProtectionStatus;
 }
 
 - (id) init {
-    DDLogDebug(@"Initializing.");
-    DDLogDebug(@"RCD_PATH: %@", RCD_PATH);
     self = [super init];
     if (self) {
-        _FIND_COMMAND_DATA    = [@"tell application id \"com.apple.iTunes\" to launch"
-                                 dataUsingEncoding:NSUTF8StringEncoding
-                                 allowLossyConversion:false];
-        _REPLACE_COMMAND_DATA = [@"--ll application id \"com.apple.iTunes\" to launch"
-                                 dataUsingEncoding:NSUTF8StringEncoding
-                                 allowLossyConversion:false];
-        DDLogDebug(@"Find command data: %@", _FIND_COMMAND_DATA);
-        DDLogDebug(@"Replace command data: %@", _REPLACE_COMMAND_DATA);
+        _FIND_COMMAND_DATA    = [@"tell application id \"com.apple.iTunes\" to launch" dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:false];
+        _REPLACE_COMMAND_DATA = [@"--ll application id \"com.apple.iTunes\" to launch" dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:false];
         
         _fileManager = [NSFileManager defaultManager];
         _files = [[NSMutableArray alloc] init];
@@ -39,7 +29,6 @@
         _isMainFilePatched = false;
         [self reloadFiles];
     }
-    DDLogDebug(@"Finished initializing.");
     return self;
 }
 
@@ -113,8 +102,7 @@
     return output;
 }
 
-- (BOOL) patchFile: (NSError **) error {
-    DDLogInfo(@"Patching rcd...");
+- (void) patchFile: (NSError *) error {
     NSString * filePath = [NSString stringWithFormat:@"%@/rcd", RCD_PATH];
     NSData * fileData = [_fileManager contentsAtPath:filePath];
     NSMutableData * mutableData = [fileData mutableCopy];
@@ -124,50 +112,37 @@
     while (true) {
         foundAt = [mutableData rangeOfData:_FIND_COMMAND_DATA options:kNilOptions range:nextRange];
         if (foundAt.location == NSNotFound) {
-            DDLogInfo(@"No more instances.");
             break;
         }
         numFound += 1;
         [mutableData replaceBytesInRange:foundAt withBytes:[_REPLACE_COMMAND_DATA bytes] length:[_REPLACE_COMMAND_DATA length]];
-        DDLogInfo(@"Replaced instance #%u at %lu:%lu", numFound, (unsigned long)foundAt.location, (unsigned long)foundAt.length);
         NSUInteger after = foundAt.location + foundAt.length;
         nextRange = NSMakeRange(after, [mutableData length] - after);
-    }
-    
-    if (numFound == 0) {
-        DDLogError(@"No instances found!");
-    } else {
-        DDLogInfo(@"Replaced %u total instances", numFound);
     }
     
     // Create authorization reference so we don't have to keep asking for user/password.
     AuthorizationExternalForm authExtForm;
     if (![self getAuthorizationExternalForm:&authExtForm]) {
-        DDLogInfo(@"getAuthorizationExternalForm failed!");
-        return false;
+        return;
     }
     
     // Create backup file and a patched version.
     NSDate * now = [[NSDate alloc] init];
     NSDateFormatter * dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyyMMdd_HH_mm.ss"];
-    NSString * backup_filepath = [NSString
-                                  stringWithFormat:@"%@/rcd_backup_%@_%@",
-                                  RCD_PATH,
-                                  [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"],
-                                  [dateFormatter stringFromDate:now]
-                                  ];
-    DDLogInfo(@"Creating backup file %@ before overwriting rcd.", backup_filepath);
-    [self writeDataToProtectedFile:fileData filePath:backup_filepath authExtForm:authExtForm];
+    [self writeDataToProtectedFile:fileData
+                          filePath:[NSString stringWithFormat:@"%@/rcd_backup_%@_%@",
+                                    RCD_PATH,
+                                    [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"],
+                                    [dateFormatter stringFromDate:now]]
+                       authExtForm:authExtForm];
     
     // Write the updated file.
     NSString * new_file = [NSString stringWithFormat:@"%@/rcd", RCD_PATH];
-    DDLogInfo(@"Writing the updated bytes to original file (%@).", new_file);
     [self writeDataToProtectedFile:mutableData filePath:new_file authExtForm:authExtForm];
     
     // Then run the command to sign the newly created file.
     //    [self writeDataToProtectedFile:mutableData filePath:[NSString stringWithFormat:@"%@/rcd_new_unsigned", RCD_PATH] authExtForm:authExtForm];
-    DDLogInfo(@"Signing file.");
     [self selfSignFile:[NSString stringWithFormat:@"%@/rcd", RCD_PATH] authExtForm:authExtForm];
     
     // Finally restart rcd processes.
@@ -185,7 +160,6 @@
     AuthorizationRef authRef;
     OSStatus status = AuthorizationCreate(NULL, kAuthorizationEmptyEnvironment, kAuthorizationFlagDefaults, &authRef);
     if (status != errAuthorizationSuccess) {
-        DDLogError(@"Could not initialize authorization reference (OSStatus = %d).", status);
         [NSException raise:@"no_auth_ref" format:@"Could not initialize authorization reference (OSStatus = %d).", status];
     }
     
@@ -207,8 +181,6 @@
 - (BOOL) writeDataToProtectedFile:(NSData *)data
                          filePath:(NSString *)filePath
                       authExtForm:(AuthorizationExternalForm)authExtForm {
-
-    DDLogDebug(@"writeDataToProtectedFile: %@", filePath);
     NSPipe * writePipe = [[NSPipe alloc] init];
     NSFileHandle * writeHandle = [writePipe fileHandleForWriting];
     NSTask * task = [[NSTask alloc] init];
@@ -262,7 +234,6 @@
                                             output:&output
                                   errorDescription:&processErrorDescription];
     if (!success) {
-        DDLogError(@"codesign task returned false!");
         [NSException raise:@"no_codesign" format:@"Could not codesign the modified binary."];
     }
     return success;

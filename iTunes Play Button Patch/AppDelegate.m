@@ -10,8 +10,6 @@
 #import "Patcher.h"
 #import "RcdFile.h"
 #import "AboutWindowController.h"
-#import "PatchedWindowController.h"
-#import "ErrorWindowController.h"
 #import "GradientView.h"
 
 
@@ -27,20 +25,14 @@
 
 - (IBAction)showInFinderMenu:(id)sender;
 - (IBAction)aboutMenuItemClicked:(id)sender;
-- (IBAction)showPatchedWindowMenuItemClicked:(id)sender;
-- (IBAction)showErrorWindowMenuItemClicked:(id)sender;
 - (IBAction)refreshButtonClicked:(id)sender;
 - (IBAction)restoreFromBackupButtonClicked:(id)sender;
 - (IBAction)patchButtonClicked:(id)sender;
-- (IBAction)viewLog:(id)sender;
-- (IBAction)reportAnIssueClicked:(id)sender;
 @end
 
 @implementation AppDelegate {
     Patcher * _patcher;
     AboutWindowController * _aboutWindowController;
-    PatchedWindowController * _patchedWindowController;
-    ErrorWindowController * _errorWindowController;
     NSFileCoordinator * _fileCoordinator;
 }
 
@@ -70,7 +62,7 @@
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
-    DDLogInfo(@"=============== applicationWillTerminate ===============");
+    // Insert code here to tear down your application
 }
 
 // Enables/disables the "Show in Finder" menu.
@@ -94,14 +86,11 @@
 }
 
 - (void) refreshView {
-    DDLogInfo(@"Refreshing view...");
     [_patcher reloadFiles];
     [_tableView reloadData];
     if ([_patcher isMainFilePatched]) {
-        DDLogInfo(@"File is already patched.");
         [_status setStringValue:@"Patched."];
     } else {
-        DDLogInfo(@"File is unpatched.");
         [_status setStringValue:@"Unpatched."];
     }
     
@@ -119,15 +108,12 @@
     [alert addButtonWithTitle:@"OK"];
     [alert addButtonWithTitle:@"Cancel"];
     if ([alert runModal] == NSAlertSecondButtonReturn) {
-        DDLogInfo(@"User decided not to proceed after showing that they will be asked for administrator password several times.");
         return;
     }
 
-    NSError * error = nil;
-    BOOL filePatched = false;
+    NSError * error;
     @try {
-        DDLogInfo(@"Requesting patch...");
-        filePatched = [_patcher patchFile:&error];
+        [_patcher patchFile:error];
     }
     @catch (NSException *exception) {
         DDLogError(@"Problem patching file: %@", [exception description]);
@@ -152,41 +138,6 @@
         _aboutWindowController = [[AboutWindowController alloc] initWithWindowNibName:@"AboutWindow"];
     }
     [[NSApplication sharedApplication] runModalForWindow:[_aboutWindowController window]];
-}
-
-- (IBAction)showPatchedWindowMenuItemClicked:(id)sender {
-    [self showPatchedSuccessfully];
-}
-
-- (void) showPatchedSuccessfully {
-    _patchedWindowController = [[PatchedWindowController alloc] initWithWindowNibName:@"PatchedWindowController"];
-    [self.window beginSheet:_patchedWindowController.window completionHandler:nil];
-}
-
-- (void) showError: (NSString *)errorMessage {
-    DDLogDebug(@"Showing error window with message: %@", errorMessage);
-    _errorWindowController = [[ErrorWindowController alloc] initWithWindowNibName:@"ErrorWindowController"];
-    [_errorWindowController setErrorMessage:errorMessage];
-    
-    [self.window beginSheet:_errorWindowController.window completionHandler:^(NSModalResponse returnCode) {
-        switch (returnCode) {
-            case TriggerCommandLineToolsInstall:
-                [self installXcodeCommandLineTools];
-                break;
-                
-            case TriggerReportIssue:
-                [self reportAnIssue];
-                break;
-                
-            default:
-                DDLogError(@"Unexpected return code: %ld", (long)returnCode);
-                break;
-        }
-    }];
-}
-
-- (IBAction)showErrorWindowMenuItemClicked:(id)sender {
-    [self showError:@"Test message!"];
 }
 
 - (IBAction)refreshButtonClicked:(id)sender {
