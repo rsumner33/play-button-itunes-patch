@@ -23,7 +23,6 @@
             </connections>
         </customObject>
         <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
-        <customObject id="AhV-xa-6ej" customClass="SUUpdater"/>
         <menu title="Main Menu" systemMenu="main" id="AYu-sK-qS6">
             <items>
                 <menuItem title="iTunes Play Button Patch" id="1Xt-HY-uBw">
@@ -368,6 +367,7 @@ This program comes with ABSOLUTELY NO WARRANTY; please see the license in the ab
             <connections>
                 <outlet property="delegate" destination="Voe-Tx-rLC" id="D4c-3R-np3"/>
             </connections>
+            <point key="canvasLocation" x="992" y="372.5"/>
         </menu>
     </objects>
 </document>

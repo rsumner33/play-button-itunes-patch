@@ -13,6 +13,7 @@
 #import "GradientView.h"
 
 
+
 @interface AppDelegate ()
 
 @property (weak) IBOutlet NSTextField *osVersion;
@@ -28,6 +29,8 @@
 - (IBAction)refreshButtonClicked:(id)sender;
 - (IBAction)restoreFromBackupButtonClicked:(id)sender;
 - (IBAction)patchButtonClicked:(id)sender;
+- (IBAction)viewLog:(id)sender;
+- (IBAction)reportAnIssueClicked:(id)sender;
 @end
 
 @implementation AppDelegate {
@@ -53,6 +56,15 @@
     [_osVersion setStringValue:osVersion];
     DDLogInfo(@"OS Version: %@", osVersion);
     
+    _dateFormatter = [[NSDateFormatter alloc] init];
+    //    [_dateFormatter setDateFormat:@"MM/dd/Y h:mm:ss a"];
+    [_dateFormatter setDateStyle:NSDateFormatterShortStyle];
+    [_dateFormatter setTimeStyle:NSDateFormatterMediumStyle];
+    
+    NSString * osVersion = [[NSProcessInfo processInfo] operatingSystemVersionString];
+    [_osVersion setStringValue:osVersion];
+    DDLogInfo(@"OS Version: %@", osVersion);
+    
     [_topBackground setEndingColor:[NSColor colorWithCalibratedRed:38.0/255 green:90.0/255 blue:158.0/255 alpha:1.0]];
     [_topBackground setStartingColor:[NSColor colorWithCalibratedRed:48.0/255 green:118.0/255 blue:209.0/255 alpha:1.0]];
     [_topBackground setAngle:270];
@@ -62,7 +74,7 @@
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
-    // Insert code here to tear down your application
+    DDLogInfo(@"=============== applicationWillTerminate ===============");
 }
 
 // Enables/disables the "Show in Finder" menu.
@@ -86,11 +98,14 @@
 }
 
 - (void) refreshView {
+    DDLogInfo(@"Refreshing view...");
     [_patcher reloadFiles];
     [_tableView reloadData];
     if ([_patcher isMainFilePatched]) {
+        DDLogInfo(@"File is already patched.");
         [_status setStringValue:@"Patched."];
     } else {
+        DDLogInfo(@"File is unpatched.");
         [_status setStringValue:@"Unpatched."];
     }
     
@@ -108,12 +123,15 @@
     [alert addButtonWithTitle:@"OK"];
     [alert addButtonWithTitle:@"Cancel"];
     if ([alert runModal] == NSAlertSecondButtonReturn) {
+        DDLogInfo(@"User decided not to proceed after showing that they will be asked for administrator password several times.");
         return;
     }
 
-    NSError * error;
+    NSError * error = nil;
+    BOOL filePatched = false;
     @try {
-        [_patcher patchFile:error];
+        DDLogInfo(@"Requesting patch...");
+        filePatched = [_patcher patchFile:&error];
     }
     @catch (NSException *exception) {
         DDLogError(@"Problem patching file: %@", [exception description]);
